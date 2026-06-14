@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 async function connectDB() {
-  const mongoUri = process.env.DB_KEY || process.env.MONGODB_URI;
+  const mongoUri = process.env.DB_KEY;
 
   if (!mongoUri) {
     throw new Error(
-      "Missing MongoDB connection string. Set DB_KEY or MONGODB_URI in the server environment."
+      "Missing MongoDB connection string. Set DB_KEY in the server environment."
     );
   }
 
