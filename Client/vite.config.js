@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     define: {
-      'process.env.REACT_APP_BACKEND_SERVER': JSON.stringify(env.REACT_APP_BACKEND_SERVER)
+      'process.env.REACT_APP_BACKEND_SERVER': JSON.stringify(env.REACT_APP_BACKEND_SERVER || 'https://shop-sphere-fjgk.onrender.com')
     },
     plugins: [react()],
     build: {
