@@ -1,0 +1,60 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Output directories
+dist/
+build/
+out/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variable files (Critical to ignore!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Mac OS X hidden files
+.DS_Store
+
+# Backend uploaded product/user images
+# We ignore the uploaded files so we don't push megabytes of data to GitHub
+Server/public/uploads/*
+Client/public/uploads/*
+
+# Keep the uploads folder itself using the .keep file
+!Server/public/uploads/.keep
+!Client/public/uploads/.keep
+
+# IDE and Editor folders
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
