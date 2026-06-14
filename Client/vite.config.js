@@ -9,5 +9,9 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_BACKEND_SERVER': JSON.stringify(env.REACT_APP_BACKEND_SERVER)
     },
     plugins: [react()],
+    build: {
+      outDir: '../Server/build',
+      emptyOutDir: true
+    }
   }
 })
