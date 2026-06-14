@@ -28,30 +28,7 @@ function normalizeResponsePayload(payload) {
   return payload;
 }
 
-const defaultOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  process.env.RENDER_EXTERNAL_URL,
-  process.env.FRONTEND_URL,
-];
-const whitelist = (
-  process.env.CORS_ALLOWED_ORIGINS || defaultOrigins.filter(Boolean).join(",")
-)
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-const corsOptions = {
-  origin(origin, callback) {
-    if (!origin || whitelist.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS error: origin is not allowed"));
-    }
-  },
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
