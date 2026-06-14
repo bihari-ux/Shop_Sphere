@@ -8,7 +8,7 @@ import 'swiper/css/effect-coverflow';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 
-import { EffectCards, EffectCoverflow, Pagination } from 'swiper/modules';
+import { EffectCards, EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function CategorySlider({ title, data }) {
@@ -27,8 +27,12 @@ export default function CategorySlider({ title, data }) {
             slideShadows: true,
         },
         loop: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
         pagination: false,
-        modules: [EffectCoverflow, Pagination, EffectCards],
+        modules: [EffectCoverflow, Pagination, EffectCards, Autoplay],
         className: "mySwiper",
         observer: true,
         observeParents: true,

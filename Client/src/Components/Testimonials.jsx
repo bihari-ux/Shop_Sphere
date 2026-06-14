@@ -8,7 +8,7 @@ import 'swiper/css/effect-coverflow';
 import 'swiper/css/effect-cards';
 import 'swiper/css/pagination';
 
-import { EffectCards, EffectCoverflow, Pagination } from 'swiper/modules';
+import { EffectCards, EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 import { useNavigate } from 'react-router-dom';
 
 import { getTestimonial } from "../Redux/ActionCreartors/TestimonialActionCreators"
@@ -31,8 +31,12 @@ export default function Testimonials() {
             slideShadows: true,
         },
         loop: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
         pagination: true,
-        modules: [EffectCoverflow, Pagination, EffectCards],
+        modules: [EffectCoverflow, Pagination, EffectCards, Autoplay],
         className: "mySwiper",
         observer: true,
         observeParents: true,
