@@ -15,7 +15,7 @@ export default function Products({ title, data }) {
                             return <div key={item._id} className="col-md-6 col-lg-4 wow fadeIn" data-wow-delay=".3s">
                                 <div className="project-item">
                                     <div className="project-img">
-                                        <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.pic[0]}`} style={{ height: 300 }} className="img-fluid w-100 rounded" alt="" />
+                                        <img src={item.pic[0]?.startsWith("http") ? item.pic[0] : `${process.env.REACT_APP_BACKEND_SERVER}/${item.pic[0]}`} style={{ height: 300 }} className="img-fluid w-100 rounded" alt="" />
                                         <div className="project-content">
                                             <Link to={`/product/${item._id}`} className="text-center">
                                                 <h6 className="text-secondary">{item.name}</h6>

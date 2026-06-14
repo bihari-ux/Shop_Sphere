@@ -119,7 +119,7 @@ export default function ProductPage() {
                             {
                                 data.pic.map((item, index) => {
                                     return <SwiperSlide key={index} className='w-100'>
-                                        <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item}`} style={{ height: 500, width: "100%" }} alt="" />
+                                        <img src={item?.startsWith("http") ? item : `${process.env.REACT_APP_BACKEND_SERVER}/${item}`} style={{ height: 500, width: "100%" }} alt="" />
                                     </SwiperSlide>
                                 })
                             }

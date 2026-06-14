@@ -52,7 +52,7 @@ export default function ProductSlider({ title, data }) {
                                     <div className="team-content">
                                         <div className="team-img-icon">
                                             <div className="team-img rounded-circle">
-                                                <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.pic[0]}`} style={{ height: 300 }} className="img-fluid w-100 rounded-circle" alt="" />
+                                                <img src={item.pic[0]?.startsWith("http") ? item.pic[0] : `${process.env.REACT_APP_BACKEND_SERVER}/${item.pic[0]}`} style={{ height: 300 }} className="img-fluid w-100 rounded-circle" alt="" />
                                             </div>
                                             <div className="team-name text-center py-3">
                                                 <h4 className="">{item.name}</h4>

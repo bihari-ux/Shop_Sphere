@@ -1,25 +1,25 @@
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-function createUploader(folder){
-    const dest = path.join("public", "uploads", folder);
-    
-    // Automatically create the directory if it doesn't exist
-    if (!fs.existsSync(dest)) {
-        fs.mkdirSync(dest, { recursive: true });
-    }
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-    const storage = multer.diskStorage({
-        destination: function(req, file, cb){
-            cb(null, dest)
+function createUploader(folder) {
+    const storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+            folder: `ShopSphere/${folder}`,
+            allowed_formats: ["jpg", "png", "jpeg", "webp", "gif"],
+            // Ensure original filename is preserved somewhat
+            public_id: (req, file) => `${Date.now()}_${file.originalname.split('.')[0]}`
         },
-        filename: function (req, file, cb){
-            cb(null, Date.now() + file.originalname)
-        }
-    })
+    });
 
-    return multer ({storage : storage})
+    return multer({ storage: storage });
 }
 
 module.exports = {
@@ -29,4 +29,4 @@ module.exports = {
     testimonialUploader: createUploader("testimonial"),
     productUploader: createUploader("product"),
     userUploader: createUploader("user")
-}
+};

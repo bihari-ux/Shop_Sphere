@@ -51,7 +51,7 @@ export default function CategorySlider({ title, data }) {
                         {data?.map(item => {
                             return <SwiperSlide key={item._id}>
                                 <div className='slider-container'>
-                                    <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`} height={400} alt="" />
+                                    <img src={item.pic?.startsWith("http") ? item.pic : `${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`} height={400} alt="" />
                                     <div className='slider-card-elements'>
                                         <h4 className='text-primary'>{item.name}</h4>
                                         <Link to={title === "Maincategory" ? `/shop?mc=${item.name}` : title === "Subcategory" ? `/shop?sc=${item.name}` : `/shop?br=${item.name}`} className='btn text-light border-3 border-light'>Shop Now</Link>

@@ -93,8 +93,8 @@ export default function AdminProduct() {
                                                 <td>
                                                     <div className='product-images'>
                                                         {item.pic?.map((p, index) => {
-                                                            return <Link key={index} to={`${process.env.REACT_APP_BACKEND_SERVER}/${p}`} target='_blank' rel='noreferrer'>
-                                                                <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${p}`} height={50} width={80} alt="Product Pic" className='me-2' />
+                                                            return <Link key={index} to={p?.startsWith("http") ? p : `${process.env.REACT_APP_BACKEND_SERVER}/${p}`} target='_blank' rel='noreferrer'>
+                                                                <img src={p?.startsWith("http") ? p : `${process.env.REACT_APP_BACKEND_SERVER}/${p}`} height={50} width={80} alt="Product Pic" className='me-2' />
                                                             </Link>
                                                         })}
                                                     </div>

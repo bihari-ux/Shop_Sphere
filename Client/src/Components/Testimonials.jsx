@@ -63,7 +63,7 @@ export default function Testimonials() {
                                 <div className="testimonial-item border p-4">
                                     <div className="d-flex align-items-center">
                                         <div className="">
-                                            <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`} height={100} alt="" />
+                                            <img src={item.pic?.startsWith("http") ? item.pic : `${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`} height={100} alt="" />
                                         </div>
                                         <div className="ms-4">
                                             <h4 className="text-secondary">{item.name}</h4>

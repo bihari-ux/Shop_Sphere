@@ -71,8 +71,8 @@ export default function ProfilePage() {
                                         {wishlist.map(item => {
                                             return <tr>
                                                 <th>
-                                                    <Link to={`${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} target='_blank' rel='noreferrer'>
-                                                        <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} height={50} width={80} alt="Product Image" />
+                                                    <Link to={item.product?.pic[0]?.startsWith("http") ? item.product?.pic[0] : `${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} target='_blank' rel='noreferrer'>
+                                                        <img src={item.product?.pic[0]?.startsWith("http") ? item.product?.pic[0] : `${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} height={50} width={80} alt="Product Image" />
                                                     </Link>
                                                 </th>
                                                 <th>{item.product?.name}</th>

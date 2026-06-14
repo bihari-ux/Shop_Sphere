@@ -136,8 +136,8 @@ export default function Cart({ title, data }) {
                                         cart.map(item => {
                                             return <tr key={item._id}>
                                                 <td>
-                                                    <Link to={`${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} target='_blank' rel='noreferrer'>
-                                                        <img src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} height={50} width={80} alt="Product Image" />
+                                                    <Link to={item.product?.pic[0]?.startsWith("http") ? item.product?.pic[0] : `${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} target='_blank' rel='noreferrer'>
+                                                        <img src={item.product?.pic[0]?.startsWith("http") ? item.product?.pic[0] : `${process.env.REACT_APP_BACKEND_SERVER}/${item.product?.pic[0]}`} height={50} width={80} alt="Product Image" />
                                                     </Link>
                                                 </td>
                                                 <td>{item.product?.name}</td>

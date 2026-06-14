@@ -270,7 +270,7 @@ export default function AdminUpdateProduct() {
                                             return <img key={index} onClick={() => {
                                                 oldPics.splice(index, 1)
                                                 setFlag(!flag)
-                                            }} src={`${process.env.REACT_APP_BACKEND_SERVER}/${item}`} height={80} width={80} className='me-2 mb-2' />
+                                            }} src={item?.startsWith("http") ? item : `${process.env.REACT_APP_BACKEND_SERVER}/${item}`} height={80} width={80} className='me-2 mb-2' />
                                         })}
                                     </div>
                                 </div>

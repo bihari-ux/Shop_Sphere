@@ -34,7 +34,7 @@ export default function Profile({ title }) {
           <div className="col-md-6 mb-3">
             {data.pic ? (
               <img
-                src={`${process.env.REACT_APP_BACKEND_SERVER}/${data.pic}`}
+                src={data.pic?.startsWith("http") ? data.pic : `${process.env.REACT_APP_BACKEND_SERVER}/${data.pic}`}
                 height={380}
                 width={"100%"}
                 alt=""
