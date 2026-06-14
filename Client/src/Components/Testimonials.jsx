@@ -18,7 +18,6 @@ export default function Testimonials() {
 
     let [slidesPerView, setSlidesPerView] = useState(window.innerWidth < 1000 ? 1 : 3)
     let [slideType, setSlideType] = useState(window.innerWidth < 1000 ? 'cards' : 'coverflow')
-    let navigate = useNavigate()
     let options = {
         effect: slideType,
         grabCursor: true,
@@ -34,14 +33,19 @@ export default function Testimonials() {
         loop: true,
         pagination: true,
         modules: [EffectCoverflow, Pagination, EffectCards],
-        className: "mySwiper"
+        className: "mySwiper",
+        observer: true,
+        observeParents: true,
     }
-    function handelWindoResize() {
-        setSlidesPerView(window.innerWidth < 1000 ? 1 : 3)
-        setSlideType(window.innerWidth < 1000 ? 'cards' : 'coverflow')
-        navigate(0)
-    }
-    window.addEventListener("resize", handelWindoResize);
+
+    React.useEffect(() => {
+        function handelWindoResize() {
+            setSlidesPerView(window.innerWidth < 1000 ? 1 : 3)
+            setSlideType(window.innerWidth < 1000 ? 'cards' : 'coverflow')
+        }
+        window.addEventListener("resize", handelWindoResize);
+        return () => window.removeEventListener("resize", handelWindoResize);
+    }, []);
 
     useEffect(() => {
         (() => {
@@ -57,8 +61,8 @@ export default function Testimonials() {
                         <h1>Our Client Saying!</h1>
                     </div>
 
-                    <Swiper {...options}>
-                        {TestimonialStateData && TestimonialStateData.filter(x => x.active).map(item => {
+                    {TestimonialStateData && TestimonialStateData.filter(x => x.active).length > 0 && <Swiper {...options}>
+                        {TestimonialStateData.filter(x => x.active).map(item => {
                             return <SwiperSlide key={item._id}>
                                 <div className="testimonial-item border p-4">
                                     <div className="d-flex align-items-center">
@@ -82,7 +86,7 @@ export default function Testimonials() {
                                 </div>
                             </SwiperSlide>
                         })}
-                    </Swiper>
+                    </Swiper>}
                 </div>
             </div >
         </>

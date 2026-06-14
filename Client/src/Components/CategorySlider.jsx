@@ -14,7 +14,6 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function CategorySlider({ title, data }) {
     let [slidesPerView, setSlidesPerView] = useState(window.innerWidth < 1000 ? 1 : 3)
     let [slideType, setSlideType] = useState(window.innerWidth < 1000 ? 'cards' : 'coverflow')
-    let navigate = useNavigate()
     let options = {
         effect: slideType,
         grabCursor: true,
@@ -30,14 +29,19 @@ export default function CategorySlider({ title, data }) {
         loop: true,
         pagination: false,
         modules: [EffectCoverflow, Pagination, EffectCards],
-        className: "mySwiper"
+        className: "mySwiper",
+        observer: true,
+        observeParents: true,
     }
-    function handelWindoResize() {
-        setSlidesPerView(window.innerWidth < 1000 ? 1 : 3)
-        setSlideType(window.innerWidth < 1000 ? 'cards' : 'coverflow')
-        navigate(0)
-    }
-    window.addEventListener("resize", handelWindoResize);
+
+    React.useEffect(() => {
+        function handelWindoResize() {
+            setSlidesPerView(window.innerWidth < 1000 ? 1 : 3)
+            setSlideType(window.innerWidth < 1000 ? 'cards' : 'coverflow')
+        }
+        window.addEventListener("resize", handelWindoResize);
+        return () => window.removeEventListener("resize", handelWindoResize);
+    }, []);
     return (
         <>
             <div className="container-fluid Maincategory py-5 mb-5">
@@ -47,8 +51,8 @@ export default function CategorySlider({ title, data }) {
                         <h3>We Deals in Following!</h3>
                     </div>
 
-                    <Swiper {...options}>
-                        {data?.map(item => {
+                    {data && data.length > 0 && <Swiper {...options}>
+                        {data.map(item => {
                             return <SwiperSlide key={item._id}>
                                 <div className='slider-container'>
                                     <img src={item.pic?.startsWith("http") ? item.pic : `${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`} height={400} alt="" />
@@ -59,7 +63,7 @@ export default function CategorySlider({ title, data }) {
                                 </div>
                             </SwiperSlide>
                         })}
-                    </Swiper>
+                    </Swiper>}
                 </div>
             </div >
         </>

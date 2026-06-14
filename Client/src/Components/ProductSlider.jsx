@@ -13,7 +13,6 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function ProductSlider({ title, data }) {
     let [slidesPerView, setSlidesPerView] = useState(window.innerWidth < 1000 ? 1 : 3)
     let [slideType, setSlideType] = useState(window.innerWidth < 1000 ? 'cards' : 'coverflow')
-    let navigate = useNavigate()
     let options = {
         effect: slideType,
         grabCursor: true,
@@ -29,14 +28,19 @@ export default function ProductSlider({ title, data }) {
         loop: true,
         pagination: false,
         modules: [EffectCoverflow, Pagination, EffectCards],
-        className: "mySwiper"
+        className: "mySwiper",
+        observer: true,
+        observeParents: true,
     }
-    function handelWindoResize() {
-        setSlidesPerView(window.innerWidth < 1000 ? 1 : 3)
-        setSlideType(window.innerWidth < 1000 ? 'cards' : 'coverflow')
-        navigate(0)
-    }
-    window.addEventListener("resize", handelWindoResize);
+
+    React.useEffect(() => {
+        function handelWindoResize() {
+            setSlidesPerView(window.innerWidth < 1000 ? 1 : 3)
+            setSlideType(window.innerWidth < 1000 ? 'cards' : 'coverflow')
+        }
+        window.addEventListener("resize", handelWindoResize);
+        return () => window.removeEventListener("resize", handelWindoResize);
+    }, []);
     return (
         <>
             <div className="container-fluid py-5 mb-5 team">
@@ -45,8 +49,8 @@ export default function ProductSlider({ title, data }) {
                         <h5 className="text-primary">{title ? title : "Our Latest Products"}</h5>
                         <h1>Checkout Our {title ? title : "Latest Products"}  of Top Brands</h1>
                     </div>
-                    <Swiper {...options}>
-                        {data?.map((item) => {
+                    {data && data.length > 0 && <Swiper {...options}>
+                        {data.map((item) => {
                             return <SwiperSlide key={item._id}>
                                 <div className="rounded team-item">
                                     <div className="team-content">
@@ -66,7 +70,7 @@ export default function ProductSlider({ title, data }) {
                                 </div>
                             </SwiperSlide>
                         })}
-                    </Swiper>
+                    </Swiper>}
                 </div>
             </div>
         </>
