@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     build: {
-      outDir: '../Server/build',
+      outDir: 'build',
       emptyOutDir: true
     }
   }
