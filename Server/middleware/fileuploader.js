@@ -1,3 +1,4 @@
+require("dotenv").config();
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
@@ -9,16 +10,20 @@ try {
     CloudinaryStorage = require("multer-storage-cloudinary").CloudinaryStorage;
     cloudinary = require("cloudinary").v2;
 
-    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+    const cloud_name = process.env.CLOUDINARY_CLOUD_NAME ? process.env.CLOUDINARY_CLOUD_NAME.trim() : null;
+    const api_key = process.env.CLOUDINARY_API_KEY ? process.env.CLOUDINARY_API_KEY.trim() : null;
+    const api_secret = process.env.CLOUDINARY_API_SECRET ? process.env.CLOUDINARY_API_SECRET.trim() : null;
+
+    if (cloud_name && api_key && api_secret) {
         cloudinary.config({
-            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET,
+            cloud_name: cloud_name,
+            api_key: api_key,
+            api_secret: api_secret,
         });
         useCloudinary = true;
     }
 } catch (error) {
-    console.log("Cloudinary modules not found or configuration failed. Falling back to local disk storage.");
+    console.log("Cloudinary modules not found or configuration failed. Falling back to local disk storage.", error);
 }
 
 function createUploader(folder) {
