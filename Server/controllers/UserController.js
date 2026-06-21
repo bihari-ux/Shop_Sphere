@@ -1,5 +1,5 @@
 const User = require("../models/User")
-const fs = require("fs")
+const { deleteFile } = require("../middleware/fileuploader")
 const passwordValidator = require('password-validator')
 const bcrypt = require("bcrypt")
 const mailer = require("../mailer/index")
@@ -45,7 +45,7 @@ async function createRecord(req, res) {
                 } catch (error) {
 
                     try {
-                        fs.unlinkSync(req.file.path)
+                        await deleteFile(req.file?.path)
                     } catch (error) { }
 
                     let errorMessage = {}
@@ -134,9 +134,7 @@ async function updateRecord(req,res){
         if(req.headers.authorization)
             data.role = req.body.role
         if(await data.save() && req.file){
-            try {
-               fs.unlinkSync(data.pic) 
-            } catch (error) { }
+            await deleteFile(data.pic)
             data.pic = req.file.path
             await data.save()
         }
@@ -152,7 +150,7 @@ async function updateRecord(req,res){
     })
     } catch (error) {
         try {
-          fs.unlinkSync(req.file.path)  
+          await deleteFile(req.file?.path)
         } catch (error) {}
         let errorMessage = {}
         error.keyValue?.username ? errorMessage.username = "User With This User Name Already Exist" : null
@@ -177,9 +175,7 @@ async function deleteRecord(req,res){
     try {
       let data = await User.findOne({_id:req.params._id})
     if (data){
-        try {
-           fs.unlinkSync(data.pic) 
-        } catch (error) {}
+        await deleteFile(data.pic)
        await data.deleteOne()
         res.send({
             result: "Done",

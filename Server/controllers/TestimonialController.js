@@ -1,5 +1,5 @@
 const Testimonial = require("../models/Testimonial")
-const fs = require("fs")
+const { deleteFile } = require("../middleware/fileuploader")
 
 async function createRecord(req,res){
     try {
@@ -15,7 +15,7 @@ async function createRecord(req,res){
     } catch (error) {
 
          try {
-            fs.unlinkSync(req.file.path)
+            await deleteFile(req.file?.path)
          } catch (error) {}
         let errorMessage = {}
         error.errors?.name?errorMessage.name = error.errors.name.message:null 
@@ -82,9 +82,7 @@ async function updateRecord(req,res){
         data.message = req.body.message??data.message
         data.active = req.body.active??data.active
         if(await data.save() && req.file){
-            try {
-               fs.unlinkSync(data.pic) 
-            } catch (error) { }
+            await deleteFile(data.pic)
             data.pic = req.file.path
             await data.save()
         }
@@ -100,7 +98,7 @@ async function updateRecord(req,res){
     })
     } catch (error) {
         try {
-          fs.unlinkSync(req.file.path)  
+          await deleteFile(req.file?.path)
         } catch (error) {}
         
             res.status(500).send({
@@ -115,9 +113,7 @@ async function deleteRecord(req,res){
     try {
       let data = await Testimonial.findOne({_id:req.params._id})
     if (data){
-        try {
-           fs.unlinkSync(data.pic) 
-        } catch (error) {}
+        await deleteFile(data.pic)
        await data.deleteOne()
         res.send({
             result: "Done",

@@ -1,5 +1,5 @@
 const Subcategory = require("../models/Subcategory")
-const fs = require("fs")
+const { deleteFile } = require("../middleware/fileuploader")
 
 async function createRecord(req,res){
     try {
@@ -15,7 +15,7 @@ async function createRecord(req,res){
     } catch (error) {
 
          try {
-            fs.unlinkSync(req.file.path)
+            await deleteFile(req.file?.path)
          } catch (error) {}
         let errorMessage = {}
         error.keyValue?errorMessage.name = "Subcategory With This Name Already Exist" : null
@@ -81,9 +81,7 @@ async function updateRecord(req,res){
         data.name = req.body.name??data.name
         data.active = req.body.active??data.active
         if(await data.save() && req.file){
-            try {
-               fs.unlinkSync(data.pic) 
-            } catch (error) { }
+            await deleteFile(data.pic)
             data.pic = req.file.path
             await data.save()
         }
@@ -99,7 +97,7 @@ async function updateRecord(req,res){
     })
     } catch (error) {
         try {
-          fs.unlinkSync(req.file.path)  
+          await deleteFile(req.file?.path)
         } catch (error) {}
         let errorMessage = {}
         error.keyValue ? errorMessage.name = "Subcategory With This Name Already Exist" : null
@@ -123,9 +121,7 @@ async function deleteRecord(req,res){
     try {
       let data = await Subcategory.findOne({_id:req.params._id})
     if (data){
-        try {
-           fs.unlinkSync(data.pic) 
-        } catch (error) {}
+        await deleteFile(data.pic)
        await data.deleteOne()
         res.send({
             result: "Done",

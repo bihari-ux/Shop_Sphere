@@ -7,50 +7,8 @@ const connectDB = require("./db_connect");
 const Router = require("./routes/index");
 const app = express();
 
-function normalizeResponsePayload(payload) {
-  if (Array.isArray(payload)) {
-    return payload.map(normalizeResponsePayload);
-  }
-
-  if (payload && typeof payload === "object") {
-    return Object.fromEntries(
-      Object.entries(payload).map(([key, value]) => [
-        key,
-        normalizeResponsePayload(value),
-      ])
-    );
-  }
-
-  if (typeof payload === "string" && payload.includes("\\")) {
-    return payload.replace(/\\/g, "/");
-  }
-
-  return payload;
-}
-
 app.use(cors());
 app.use(express.json());
-
-app.use((req, res, next) => {
-  const originalSend = res.send.bind(res);
-
-  res.send = (body) => {
-    if (body && typeof body === "object" && !Buffer.isBuffer(body)) {
-      let plainBody = body;
-      try {
-        // Convert mongoose documents to plain objects first
-        plainBody = JSON.parse(JSON.stringify(body));
-      } catch (e) {
-        plainBody = body;
-      }
-      return originalSend(normalizeResponsePayload(plainBody));
-    }
-
-    return originalSend(body);
-  };
-
-  next();
-});
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "build")));

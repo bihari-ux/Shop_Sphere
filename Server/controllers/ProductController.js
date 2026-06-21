@@ -1,5 +1,5 @@
 const Product = require("../models/Product");
-const fs = require("fs");
+const { deleteFile } = require("../middleware/fileuploader");
 
 async function createRecord(req, res) {
     try {
@@ -20,7 +20,9 @@ async function createRecord(req, res) {
     } catch (error) {
         try {
             if (req.files) {
-                Array.from(req.files).forEach(x => fs.unlinkSync(x.path));
+                for (const file of Array.from(req.files)) {
+                    await deleteFile(file.path);
+                }
             }
         } catch (e) { }
 
@@ -103,7 +105,7 @@ async function updateRecord(req, res) {
     try {
         let data = await Product.findOne({ _id: req.params._id });
         if (data) {
-            const oldPics = req.body.oldPics ? req.body.oldPics.split(",").filter(x => x !== "").map(x => x.replace(/\\/g, "/")) : [];
+            const oldPics = req.body.oldPics ? req.body.oldPics.split(",").filter(x => x !== "") : [];
             
             data.name = req.body.name ?? data.name;
             data.maincategory = req.body.maincategory ?? data.maincategory;
@@ -119,22 +121,18 @@ async function updateRecord(req, res) {
             data.description = req.body.description ?? data.description;
             data.active = req.body.active ?? data.active;
 
-            // Delete removed pictures from filesystem
-            const filesToDelete = data.pic.filter(x => !oldPics.includes(x.replace(/\\/g, "/")));
-            filesToDelete.forEach(x => {
-                try {
-                    fs.unlinkSync(x);
-                } catch (error) {
-                    console.log("File deletion error:", error);
-                }
-            });
+            // Delete removed pictures (works with both Cloudinary and local)
+            const filesToDelete = data.pic.filter(x => !oldPics.includes(x));
+            for (const filePath of filesToDelete) {
+                await deleteFile(filePath);
+            }
 
             // Keep only old pictures that weren't removed
-            let updatedPics = data.pic.filter(x => oldPics.includes(x.replace(/\\/g, "/")));
+            let updatedPics = data.pic.filter(x => oldPics.includes(x));
 
             // Append new pictures if any
             if (req.files && req.files.length > 0) {
-                updatedPics = updatedPics.concat(Array.from(req.files).map(x => x.path.replace(/\\/g, "/")));
+                updatedPics = updatedPics.concat(Array.from(req.files).map(x => x.path));
             }
             data.pic = updatedPics;
 
@@ -159,7 +157,9 @@ async function updateRecord(req, res) {
         console.log(error);
         try {
             if (req.files) {
-                Array.from(req.files).forEach(x => fs.unlinkSync(x.path));
+                for (const file of Array.from(req.files)) {
+                    await deleteFile(file.path);
+                }
             }
         } catch (e) { }
 
@@ -174,13 +174,11 @@ async function deleteRecord(req, res) {
     try {
         let data = await Product.findOne({ _id: req.params._id });
         if (data) {
-            try {
-                if (data.pic && Array.isArray(data.pic)) {
-                    data.pic.forEach(x => {
-                        try { fs.unlinkSync(x); } catch(e) {}
-                    });
+            if (data.pic && Array.isArray(data.pic)) {
+                for (const picPath of data.pic) {
+                    await deleteFile(picPath);
                 }
-            } catch (error) {}
+            }
             
             await data.deleteOne();
             res.send({

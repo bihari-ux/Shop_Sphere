@@ -21,6 +21,7 @@ try {
             api_secret: api_secret,
         });
         useCloudinary = true;
+        console.log("Cloudinary configured successfully.");
     }
 } catch (error) {
     console.log("Cloudinary modules not found or configuration failed. Falling back to local disk storage.", error);
@@ -53,11 +54,64 @@ function createUploader(folder) {
     }
 }
 
+/**
+ * Check if a given path is a Cloudinary URL
+ */
+function isCloudinaryUrl(picPath) {
+    return typeof picPath === "string" && picPath.startsWith("http");
+}
+
+/**
+ * Extract the Cloudinary public_id from a full Cloudinary URL
+ * e.g. https://res.cloudinary.com/xxx/image/upload/v123/ShopSphere/product/abc.jpg
+ * returns "ShopSphere/product/abc"
+ */
+function extractPublicId(url) {
+    try {
+        // Match everything after /upload/v<digits>/ and before the file extension
+        const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.\w+$/);
+        return match ? match[1] : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * Delete a file - handles both Cloudinary URLs and local file paths
+ */
+async function deleteFile(picPath) {
+    if (!picPath) return;
+    
+    if (isCloudinaryUrl(picPath)) {
+        // Delete from Cloudinary
+        if (useCloudinary && cloudinary) {
+            const publicId = extractPublicId(picPath);
+            if (publicId) {
+                try {
+                    await cloudinary.uploader.destroy(publicId);
+                } catch (error) {
+                    console.log("Cloudinary delete error:", error.message);
+                }
+            }
+        }
+    } else {
+        // Delete from local filesystem
+        try {
+            fs.unlinkSync(picPath);
+        } catch (error) {
+            // File may not exist, ignore
+        }
+    }
+}
+
 module.exports = {
     maincategoryUploader: createUploader("maincategory"),
     subcategoryUploader: createUploader("subcategory"),
     brandUploader: createUploader("brand"),
     testimonialUploader: createUploader("testimonial"),
     productUploader: createUploader("product"),
-    userUploader: createUploader("user")
+    userUploader: createUploader("user"),
+    deleteFile,
+    isCloudinaryUrl,
+    useCloudinary
 };
